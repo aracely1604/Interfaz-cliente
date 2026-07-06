@@ -1,9 +1,50 @@
 import { useState } from 'react'
 import { Alerta, Campo, Logo, Requisitos } from './Componentes'
 
-export default function VistaRecuperarContrasena({ obtenerPreguntas, cambiarContrasena, cargando, error, exito, ir }) {
-  const [correo, setCorreo] = useState(''); const [preguntas, setPreguntas] = useState([]); const [respuestas, setRespuestas] = useState(['', '', '']); const [nueva, setNueva] = useState('')
-  const buscar = async (e) => { e.preventDefault(); try { setPreguntas(await obtenerPreguntas(correo)) } catch { /* alerta del controlador */ } }
-  const cambiar = async (e) => { e.preventDefault(); const ok = await cambiarContrasena(correo, respuestas, nueva); if (ok) setTimeout(() => ir('inicio'), 1600) }
-  return <main className="pagina-simple"><div className="barra-superior"><Logo /><button className="enlace" onClick={() => ir('inicio')}>← Volver al inicio</button></div><section className="tarjeta-formulario"><div className="titulo-form"><span className="mini-icono">🔑</span><h1>Recupera tu acceso</h1><p>Primero buscaremos tu cuenta.</p></div>{!preguntas.length ? <form onSubmit={buscar}><Campo etiqueta="Correo electrónico" type="email" required placeholder="tu@correo.cl" value={correo} onChange={(e) => setCorreo(e.target.value)} /><Alerta error={error} /><button className="boton-primario" disabled={cargando}>Continuar →</button></form> : <form onSubmit={cambiar}><div className="bloque-preguntas"><h3>Confirma que eres tú</h3>{preguntas.map((p, i) => <Campo key={p} etiqueta={p} required placeholder="Tu respuesta" value={respuestas[i]} onChange={(e) => { const r = [...respuestas]; r[i] = e.target.value; setRespuestas(r) }} />)}</div><Campo etiqueta="Nueva contraseña" type="password" required value={nueva} onChange={(e) => setNueva(e.target.value)} /><Requisitos valor={nueva} /><Alerta error={error} exito={exito} /><button className="boton-primario" disabled={cargando}>Cambiar contraseña</button></form>}</section></main>
+export default function VistaRecuperarContrasena({ recuperarContrasena, cargando, error, exito, ir }) {
+  const [correo, setCorreo] = useState('');
+
+  const enviar = async (e) => {
+    e.preventDefault();
+    const ok = await recuperarContrasena(correo);
+    if (ok) {
+      setTimeout(() => ir('inicio'), 4000);
+    }
+  };
+
+  return (
+    <main className="pagina-simple">
+      <div className="barra-superior">
+        <Logo />
+        <button className="enlace" onClick={() => ir('inicio')}>
+          ← Volver al inicio
+        </button>
+      </div>
+      
+      <section className="tarjeta-formulario">
+        <div className="titulo-form">
+          <span className="mini-icono">🔑</span>
+          <h1>Recupera tu acceso</h1>
+          <p>Te enviaremos un enlace seguro para crear una nueva contraseña.</p>
+        </div>
+        
+        <form onSubmit={enviar}>
+          <Campo
+            etiqueta="Correo electrónico"
+            type="email"
+            required
+            placeholder="tu@correo.cl"
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+          />
+          
+          <Alerta error={error} exito={exito} />
+          
+          <button className="boton-primario" disabled={cargando || exito}>
+            {cargando ? 'Enviando...' : 'Enviar enlace →'}
+          </button>
+        </form>
+      </section>
+    </main>
+  );
 }

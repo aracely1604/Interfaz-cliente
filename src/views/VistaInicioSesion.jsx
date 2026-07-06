@@ -1,8 +1,76 @@
 import { useState } from 'react'
 import { Alerta, Campo, Logo } from './Componentes'
+import '../styles/VistaInicioSesion.css'
 
 export default function VistaInicioSesion({ ingresar, cargando, error, ir }) {
-  const [datos, setDatos] = useState({ correo: '', contrasena: '' })
-  const enviar = (e) => { e.preventDefault(); ingresar(datos.correo, datos.contrasena) }
-  return <main className="pagina-acceso"><section className="panel-marca"><Logo claro /><div className="mensaje-marca"><span className="etiqueta">✦ EL MEJOR POLLO DE CALAMA</span><h1>Tu antojo,<br /><em>en camino.</em></h1><p>El sabor crujiente de Chicken Broaster, preparado al momento y directo a tu puerta.</p><div className="ventajas"><span>🔥 Recién preparado</span><span>🛵 Delivery rápido</span><span>❤️ Sabor local</span></div></div><small>© 2026 Chicken Broaster Calama</small></section><section className="panel-formulario"><div className="tarjeta-acceso"><span className="mini-icono">👋</span><h2>¡Qué bueno verte!</h2><p>Ingresa a tu cuenta para hacer tu pedido.</p><form onSubmit={enviar}><Campo etiqueta="Correo electrónico" type="email" placeholder="tu@correo.cl" required value={datos.correo} onChange={(e) => setDatos({ ...datos, correo: e.target.value })} /><Campo etiqueta="Contraseña" type="password" placeholder="••••••••" required value={datos.contrasena} onChange={(e) => setDatos({ ...datos, contrasena: e.target.value })} /><button type="button" className="enlace derecha" onClick={() => ir('recuperar')}>¿Olvidaste tu contraseña?</button><Alerta error={error} /><button className="boton-primario" disabled={cargando}>{cargando ? 'Ingresando…' : 'Iniciar sesión →'}</button></form><div className="separador"><span>¿Primera vez por aquí?</span></div><button className="boton-secundario" onClick={() => ir('registro')}>Crear una cuenta</button><small className="nota">🔒 Tus datos están protegidos</small></div></section></main>
+  const [datos, setDatos] = useState({ correo: '', contrasena: '' });
+  
+  const enviar = (e) => { 
+    e.preventDefault(); 
+    ingresar(datos.correo, datos.contrasena); 
+  };
+
+  return (
+    <main className="pagina-acceso">
+      <section className="panel-marca">
+        <Logo claro />
+        <div className="mensaje-marca">
+          <span className="etiqueta">✦ EL MEJOR POLLO DE CALAMA</span>
+          <h1>Tu antojo,<br /><em>en camino.</em></h1>
+          <p>El sabor crujiente de Chicken Broaster, preparado al momento y directo a tu puerta.</p>
+          <div className="ventajas">
+            <span>🔥 Recién preparado</span>
+            <span>🛵 Delivery rápido</span>
+            <span>❤️ Sabor local</span>
+          </div>
+        </div>
+        <small>© 2026 Chicken Broaster Calama</small>
+      </section>
+      
+      <section className="panel-formulario">
+        <div className="tarjeta-acceso">
+          <span className="mini-icono">👋</span>
+          <h2>¡Qué bueno verte!</h2>
+          <p>Ingresa a tu cuenta para hacer tu pedido.</p>
+          <form onSubmit={enviar}>
+            <Campo 
+              etiqueta="Correo electrónico" 
+              type="email" 
+              placeholder="tu@correo.cl" 
+              required 
+              value={datos.correo} 
+              onChange={(e) => setDatos({ ...datos, correo: e.target.value })} 
+            />
+            <Campo 
+              etiqueta="Contraseña" 
+              type="password" 
+              placeholder="••••••••" 
+              required 
+              value={datos.contrasena} 
+              onChange={(e) => setDatos({ ...datos, contrasena: e.target.value })} 
+            />
+            <button 
+              type="button" 
+              className="enlace derecha" 
+              onClick={() => ir('recuperar')}
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+            <Alerta error={error} />
+            <button className="boton-primario" disabled={cargando}>
+              {cargando ? 'Ingresando…' : 'Iniciar sesión →'}
+            </button>
+          </form>
+          
+          <div className="separador">
+            <span>¿Primera vez por aquí?</span>
+          </div>
+          <button className="boton-secundario" onClick={() => ir('registro')}>
+            Crear una cuenta
+          </button>
+          <small className="nota">🔒 Tus datos están protegidos</small>
+        </div>
+      </section>
+    </main>
+  );
 }

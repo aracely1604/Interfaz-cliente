@@ -1,0 +1,57 @@
+.tarjeta-entrega {
+  background: white;
+  border: 1px solid var(--borde);
+  border-radius: 15px;
+  margin-top: 24px;
+  padding: 28px;
+  margin: 0;
+}
+
+.tarjeta-entrega h2 {
+  margin-top: 30px;
+}
+
+.opcion-pago {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--borde);
+  border-radius: 11px;
+  padding: 15px;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.opcion-pago.seleccionada {
+  border-color: var(--naranja);
+  background: #fff3f3;
+}
+
+.opcion-pago > span {
+  font-size: 24px;
+}
+
+.opcion-pago div {
+  display: flex;
+  flex-direction: column;
+}
+
+.opcion-pago small {
+  color: var(--suave);
+  margin-top: 4px;
+}
+
+.fijo {
+  position: sticky;
+  top: 20px;
+}
+
+.centrado {
+  text-align: center;
+  background: none !important;
+  color: var(--suave) !important;
+}
+
+@media (max-width: 600px) {
+  .tarjeta-entrega { padding: 20px; }
+}
