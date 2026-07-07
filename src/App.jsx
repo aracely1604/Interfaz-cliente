@@ -23,6 +23,6 @@ export default function App() {
   if (vista === 'menu') return <VistaMenu pedido={pedido} ir={ir} cerrarSesion={cerrarSesion} usuario={autenticacion.usuario} />
   if (vista === 'carrito') return <VistaCarrito pedido={pedido} ir={ir} />
   if (vista === 'entrega') return <VistaEntrega pedido={pedido} ir={ir} usuario={autenticacion.usuario} />
-  if (vista === 'seguimiento') return <VistaSeguimiento ir={ir} />
+  if (vista === 'seguimiento') return <VistaSeguimiento ir={ir} usuario={autenticacion.usuario} />
   return <VistaInicioSesion {...autenticacion} ir={ir} />
 }

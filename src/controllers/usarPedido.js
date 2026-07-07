@@ -36,6 +36,7 @@ export function usePedido() {
     try { 
       await guardarPedido({ 
         clienteId: usuario?.uid || null, 
+        clienteCorreo: usuario?.correo || null,
         productos: carrito, 
         subtotal, 
         delivery, 
