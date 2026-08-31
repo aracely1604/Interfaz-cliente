@@ -1,0 +1,160 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--verde);
+}
+
+.logo img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.logo div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.logo b {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 19px;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: -.4px;
+}
+
+.logo small {
+  font-size: 8px;
+  letter-spacing: 2.2px;
+  margin-top: 4px;
+  color: var(--naranja);
+  font-weight: 800;
+}
+
+.logo-claro {
+  color: white;
+}
+
+.logo-claro small {
+  color: #fff;
+}
+
+.campo {
+  display: block;
+  margin-bottom: 17px;
+}
+
+.campo > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 7px;
+}
+
+.campo input {
+  width: 100%;
+  height: 49px;
+  padding: 0 15px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: white;
+  color: var(--texto);
+  outline: none;
+  transition: .2s;
+}
+
+.campo input:focus {
+  border-color: var(--naranja);
+  box-shadow: 0 0 0 3px rgba(239, 47, 54, .13);
+}
+
+.alerta {
+  padding: 11px 13px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+
+.alerta-error {
+  background: #fff0ed;
+  color: #a42d1a;
+}
+
+.alerta-exito {
+  background: #e8f5ee;
+  color: #176541;
+}
+
+.requisitos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: -7px 0 22px;
+}
+
+.requisitos span {
+  font-size: 11px;
+  color: #9b938a;
+  background: #f5f1ec;
+  padding: 5px 8px;
+  border-radius: 20px;
+}
+
+.requisitos .cumple {
+  color: #187044;
+  background: #e8f5ee;
+}
+
+.cabecera {
+  height: 76px;
+  padding: 0 6vw;
+  background: #b5121b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cabecera nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cabecera nav button {
+  border: 0;
+  background: none;
+  color: #e9f1ee;
+  padding: 10px 14px;
+}
+
+.cabecera .boton-carrito {
+  background: white;
+  color: var(--verde);
+  border-radius: 8px;
+}
+
+.boton-carrito b {
+  background: var(--naranja);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 7px;
+  margin-left: 5px;
+}
+
+.cabecera .salir {
+  color: #f8a47d;
+}
+
+@media (max-width: 600px) {
+  .logo img { width: 44px; height: 44px; }
+  .logo b { font-size: 14px; }
+  .logo small { font-size: 7px; }
+  .barra-superior .logo img { width: 46px; height: 46px; }
+  .cabecera { height: auto; padding: 13px 15px; flex-wrap: wrap; gap: 10px; }
+  .cabecera nav { width: 100%; overflow: auto; justify-content: space-between; }
+  .cabecera nav button { font-size: 12px; padding: 8px; }
+}
