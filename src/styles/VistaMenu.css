@@ -121,6 +121,24 @@
   min-height: 39px;
 }
 
+.selector-opcion {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+  color: var(--suave);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selector-opcion select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: white;
+  color: #332a25;
+}
+
 .info-producto > div {
   display: flex;
   align-items: center;
@@ -139,6 +157,11 @@
   border-radius: 8px;
   padding: 8px 11px;
   font-weight: 700;
+}
+
+.info-producto button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
 }
 
 .carrito-flotante {

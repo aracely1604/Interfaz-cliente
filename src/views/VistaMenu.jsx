@@ -1,8 +1,10 @@
 import { Cabecera, formatoPesos } from './Componentes'
 import { productos } from '../controllers/usarPedido'
 import '../styles/VistaMenu.css'
+import { useState } from 'react'
 
 export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
+  const [opcionesElegidas, setOpcionesElegidas] = useState({});
   const cantidad = pedido.carrito.reduce((s, x) => s + x.cantidad, 0);
 
   return (
@@ -35,9 +37,18 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
               <div className="info-producto">
                 <h3>{p.nombre}</h3>
                 <p>{p.descripcion}</p>
+                {p.opciones && (
+                  <label className="selector-opcion">
+                    <span>{p.opcionEtiqueta}</span>
+                    <select value={opcionesElegidas[p.id] || ''} onChange={(evento) => setOpcionesElegidas((actual) => ({ ...actual, [p.id]: evento.target.value }))}>
+                      <option value="">Seleccionar</option>
+                      {p.opciones.map((opcion) => <option key={opcion} value={opcion}>{opcion}</option>)}
+                    </select>
+                  </label>
+                )}
                 <div>
                   <b>{formatoPesos(p.precio)}</b>
-                  <button aria-label={`Agregar ${p.nombre}`} onClick={() => pedido.agregar(p)}>
+                  <button aria-label={`Agregar ${p.nombre}`} disabled={p.opciones && !opcionesElegidas[p.id]} onClick={() => pedido.agregar(p.opciones ? { ...p, id: `${p.id}-${opcionesElegidas[p.id]}`, nombre: `${p.nombre} (${opcionesElegidas[p.id]})`, descripcion: `${p.descripcion} Opción: ${opcionesElegidas[p.id]}.` } : p)}>
                     ＋ Agregar
                   </button>
                 </div>
