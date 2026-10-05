@@ -12,9 +12,9 @@ export const productos = [
   { id: 8, nombre: 'Promoción familiar', descripcion: 'Incluye 8 presas de pollo broaster, una bandeja de papas fritas, una bandeja de arroz y una bebida de 1,5 L.', opciones: ['Sprite', 'Coca-Cola', 'Fanta'], opcionEtiqueta: 'Elige la bebida', precio: 22000, icono: '🍗', categoria: 'Promociones' },
   { id: 9, nombre: 'Promoción familiar especial', descripcion: 'Incluye 8 presas de pollo broaster, una bandeja de papas fritas, una bandeja de arroz chaufa y una bebida de 1,5 L.', opciones: ['Sprite', 'Coca-Cola', 'Fanta'], opcionEtiqueta: 'Elige la bebida', precio: 25000, icono: '🍗', categoria: 'Promociones' },
   ...[
-    ['Pichanga', [7500, 10000, 14000, 17000, 21000], 'Pichanga. El detalle de ingredientes de cada tamaño no fue indicado.'],
-    ['Chorrellana', [7500, 10000, 14000, 17000, 22000], 'Chorrellana. El detalle de ingredientes de cada tamaño no fue indicado.'],
-    ['Pique macho', [7500, 10000, 14000, 17000, 22000], 'Pique macho. El detalle de ingredientes de cada tamaño no fue indicado.'],
+    ['Pichanga', [7500, 10000, 14000, 17000, 21000], 'Pichanga.'],
+    ['Chorrellana', [7500, 10000, 14000, 17000, 22000], 'Chorrellana.'],
+    ['Pique macho', [7500, 10000, 14000, 17000, 22000], 'Pique macho.'],
   ].flatMap(([nombre, precios, descripcion]) => precios.map((precio, i) => ({ nombre: `${nombre} · tamaño ${i + 1}`, descripcion, precio, icono: '🍽️', categoria: 'Platos y tablas', id: `${nombre}-${i}` }))),
   { id: 10, nombre: 'Milanesa de pollo o carne', descripcion: 'Milanesa a elección: pollo o carne.', precio: 7500, icono: '🍽️', categoria: 'Platos' },
   { id: 11, nombre: 'Bistec a lo pobre', descripcion: 'Bistec servido al estilo a lo pobre.', precio: 8500, icono: '🍽️', categoria: 'Platos' },
