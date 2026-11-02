@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
   const [opcionesElegidas, setOpcionesElegidas] = useState({});
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [avisoAgregado, setAvisoAgregado] = useState('');
   const cantidad = pedido.carrito.reduce((s, x) => s + x.cantidad, 0);
 
   useEffect(() => {
@@ -21,12 +22,19 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
     };
   }, [productoSeleccionado]);
 
+  useEffect(() => {
+    if (!avisoAgregado) return undefined;
+    const temporizador = window.setTimeout(() => setAvisoAgregado(''), 1800);
+    return () => window.clearTimeout(temporizador);
+  }, [avisoAgregado]);
+
   const agregarProducto = (producto) => {
     const opcion = opcionesElegidas[producto.id];
     if (producto.opciones && !opcion) return;
     pedido.agregar(producto.opciones
       ? { ...producto, id: `${producto.id}-${opcion}`, nombre: `${producto.nombre} (${opcion})`, descripcion: `${producto.descripcion} Opción: ${opcion}.` }
       : producto);
+    setAvisoAgregado(`${producto.nombre} agregado al carrito`);
     setProductoSeleccionado(null);
   };
 
@@ -114,10 +122,13 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
       )}
       
       {cantidad > 0 && (
-        <button className="carrito-flotante" onClick={() => ir('carrito')}>
+        <>
+          {avisoAgregado && <div className="aviso-agregado" role="status">✓ {avisoAgregado}</div>}
+          <button className="carrito-flotante" onClick={() => ir('carrito')} aria-live="polite">
           <span>🛒 Ver carrito</span>
           <b>{cantidad} · {formatoPesos(pedido.subtotal)}</b>
-        </button>
+          </button>
+        </>
       )}
     </main>
   );

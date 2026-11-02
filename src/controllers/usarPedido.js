@@ -58,11 +58,12 @@ export function usePedido(usuario) {
     );
   }, [usuario?.uid]);
 
-  const agregar = (producto) => setCarrito((actual) => { 
-    const item = actual.find((x) => x.id === producto.id); 
-    return item 
-      ? actual.map((x) => x.id === producto.id ? { ...x, cantidad: x.cantidad + 1 } : x) 
-      : [...actual, { ...producto, cantidad: 1 }];
+  const agregar = (producto) => setCarrito((actual) => {
+    const unidadesExistentes = actual
+      .filter((item) => item.id === producto.id)
+      .reduce((suma, item) => suma + (Number(item.cantidad) || 0), 0);
+    const sinDuplicados = actual.filter((item) => item.id !== producto.id);
+    return [...sinDuplicados, { ...producto, cantidad: unidadesExistentes + 1 }];
   });
 
   const cambiarCantidad = (id, cambio) => setCarrito((a) => 

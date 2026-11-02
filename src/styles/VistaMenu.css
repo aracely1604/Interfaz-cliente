@@ -194,6 +194,24 @@
   box-shadow: 0 14px 35px rgba(160, 15, 23, .35);
 }
 
+.aviso-agregado {
+  position: fixed;
+  z-index: 6;
+  bottom: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 11px 16px;
+  border: 1px solid #b9dfc2;
+  border-radius: 10px;
+  background: #f0fff4;
+  color: #176b36;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(30, 80, 45, .16);
+}
+
 .visor-producto-fondo {
   box-sizing: border-box;
   position: fixed;
