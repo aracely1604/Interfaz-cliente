@@ -18,6 +18,9 @@ const estadosEquivalentes = {
   en_camino: 'en_camino',
   camino: 'en_camino',
   reparto: 'en_camino',
+  en_reparto: 'en_camino',
+  tomado: 'en_camino',
+  asignado: 'en_camino',
   entregado: 'entregado',
 }
 

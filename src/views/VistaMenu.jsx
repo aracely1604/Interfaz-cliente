@@ -1,20 +1,43 @@
 import { Cabecera, formatoPesos } from './Componentes'
 import { productos } from '../controllers/usarPedido'
 import '../styles/VistaMenu.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
   const [opcionesElegidas, setOpcionesElegidas] = useState({});
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const cantidad = pedido.carrito.reduce((s, x) => s + x.cantidad, 0);
+
+  useEffect(() => {
+    if (!productoSeleccionado) return undefined;
+    const cerrarConEscape = (evento) => {
+      if (evento.key === 'Escape') setProductoSeleccionado(null);
+    };
+    document.addEventListener('keydown', cerrarConEscape);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', cerrarConEscape);
+      document.body.style.overflow = '';
+    };
+  }, [productoSeleccionado]);
+
+  const agregarProducto = (producto) => {
+    const opcion = opcionesElegidas[producto.id];
+    if (producto.opciones && !opcion) return;
+    pedido.agregar(producto.opciones
+      ? { ...producto, id: `${producto.id}-${opcion}`, nombre: `${producto.nombre} (${opcion})`, descripcion: `${producto.descripcion} Opción: ${opcion}.` }
+      : producto);
+    setProductoSeleccionado(null);
+  };
 
   return (
     <main className="pagina-tienda">
       <Cabecera ir={ir} cantidad={cantidad} cerrarSesion={cerrarSesion} />
       <section className="hero-menu">
         <div>
-          <span className="etiqueta">HOY ES UN BUEN DÍA PARA</span>
-          <h1>Darte un gustito.</h1>
-          <p>Hola, {usuario?.nombres?.split(' ')[0] || 'qué bueno verte'} 👋 Elige tus favoritos y nosotros hacemos el resto.</p>
+          <span className="etiqueta">CHICKEN BROASTER</span>
+          <h1>¡Bienvenido!</h1>
+          <p>Hola, {usuario?.nombres?.split(' ')[0] || 'qué bueno verte'} 👋 Revisa nuestras promociones de pollo broaster y platos extras.</p>
         </div>
         <div className="plato">🍔<span>🍟</span></div>
       </section>
@@ -30,10 +53,10 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
         <div className="grilla-productos">
           {productos.map((p) => (
             <article className="producto" key={p.id}>
-              <div className="foto-producto">
-                <span>{p.icono}</span>
+              <button className="foto-producto" type="button" onClick={() => setProductoSeleccionado(p)} aria-label={`Ver foto y detalles de ${p.nombre}`}>
+                {p.imagen ? <img src={p.imagen} alt={p.nombre} loading="lazy" /> : <span>{p.icono}</span>}
                 <small>{p.categoria}</small>
-              </div>
+              </button>
               <div className="info-producto">
                 <h3>{p.nombre}</h3>
                 <p>{p.descripcion}</p>
@@ -48,7 +71,7 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
                 )}
                 <div>
                   <b>{formatoPesos(p.precio)}</b>
-                  <button aria-label={`Agregar ${p.nombre}`} disabled={p.opciones && !opcionesElegidas[p.id]} onClick={() => pedido.agregar(p.opciones ? { ...p, id: `${p.id}-${opcionesElegidas[p.id]}`, nombre: `${p.nombre} (${opcionesElegidas[p.id]})`, descripcion: `${p.descripcion} Opción: ${opcionesElegidas[p.id]}.` } : p)}>
+                  <button aria-label={`Agregar ${p.nombre}`} disabled={p.opciones && !opcionesElegidas[p.id]} onClick={() => agregarProducto(p)}>
                     ＋ Agregar
                   </button>
                 </div>
@@ -58,6 +81,37 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
         </div>
 
       </section>
+
+      {productoSeleccionado && (
+        <div className="visor-producto-fondo" onMouseDown={(evento) => { if (evento.target === evento.currentTarget) setProductoSeleccionado(null); }}>
+          <section className="visor-producto" role="dialog" aria-modal="true" aria-labelledby="visor-producto-titulo">
+            <button className="visor-cerrar" type="button" onClick={() => setProductoSeleccionado(null)} aria-label="Cerrar imagen">×</button>
+            <div className="visor-foto">
+              {productoSeleccionado.imagen
+                ? <img src={productoSeleccionado.imagen} alt={productoSeleccionado.nombre} />
+                : <span>{productoSeleccionado.icono}</span>}
+            </div>
+            <div className="visor-info">
+              <span>{productoSeleccionado.categoria}</span>
+              <h2 id="visor-producto-titulo">{productoSeleccionado.nombre}</h2>
+              <p>{productoSeleccionado.descripcion}</p>
+              {productoSeleccionado.opciones && (
+                <label className="selector-opcion">
+                  <span>{productoSeleccionado.opcionEtiqueta}</span>
+                  <select value={opcionesElegidas[productoSeleccionado.id] || ''} onChange={(evento) => setOpcionesElegidas((actual) => ({ ...actual, [productoSeleccionado.id]: evento.target.value }))}>
+                    <option value="">Seleccionar</option>
+                    {productoSeleccionado.opciones.map((opcion) => <option key={opcion} value={opcion}>{opcion}</option>)}
+                  </select>
+                </label>
+              )}
+              <div className="visor-acciones">
+                <b>{formatoPesos(productoSeleccionado.precio)}</b>
+                <button type="button" disabled={productoSeleccionado.opciones && !opcionesElegidas[productoSeleccionado.id]} onClick={() => agregarProducto(productoSeleccionado)}>＋ Agregar</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
       
       {cantidad > 0 && (
         <button className="carrito-flotante" onClick={() => ir('carrito')}>

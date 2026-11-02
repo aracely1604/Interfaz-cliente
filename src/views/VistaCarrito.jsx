@@ -37,7 +37,11 @@ export default function VistaCarrito({ pedido, ir }) {
               ) : (
                 pedido.carrito.map((item) => (
                   <article key={item.id}>
-                    <span className="emoji-item">{item.icono}</span>
+                    <span className="emoji-item">
+                      {item.imagen
+                        ? <img src={item.imagen} alt={item.nombre} loading="lazy" />
+                        : item.icono}
+                    </span>
                     <div>
                       <h3>{item.nombre}</h3>
                       <p>{formatoPesos(item.precio)} c/u</p>
