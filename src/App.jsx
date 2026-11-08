@@ -14,7 +14,7 @@ import './styles/estilos.css'
 export default function App() {
   const [vista, setVista] = useState(() => sessionStorage.getItem('chicken_broaster_vista_cliente') || 'inicio')
   const alIngresar = useCallback(() => {
-    setVista((actual) => actual === 'historial' ? 'historial' : 'menu')
+    setVista((actual) => ['inicio', 'registro', 'recuperar'].includes(actual) ? 'menu' : actual)
   }, [])
   const autenticacion = useAutenticacion(alIngresar)
   const pedido = usePedido(autenticacion.usuario)
@@ -24,7 +24,12 @@ export default function App() {
     setVista(destino)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
-  const cerrarSesion = async () => { await autenticacion.cerrarSesion(); pedido.vaciarCarrito(); ir('inicio') }
+  const cerrarSesion = async () => {
+    await autenticacion.cerrarSesion();
+    pedido.vaciarCarrito();
+    sessionStorage.removeItem('chicken_broaster_datos_entrega_sesion');
+    ir('inicio');
+  }
 
   if (vista === 'registro') return <VistaRegistro {...autenticacion} ir={ir} />
   if (vista === 'recuperar') return <VistaRecuperarContrasena {...autenticacion} ir={ir} />

@@ -148,31 +148,82 @@ export const enviarCorreoRecuperacion = async (correo) => {
 
 export async function guardarPedido(pedido) {
   const codigoFinal = generarCodigoFinal();
+  const datosEntrega = pedido.entrega || {};
+  const tipoEntrega = pedido.tipoEntrega || datosEntrega.tipoEntrega || 'delivery';
+  const costoDelivery = Number(pedido.delivery) || 0;
+  const subtotal = Number(pedido.subtotal) || 0;
+  const productos = (pedido.productos || []).map((producto) => {
+    const cantidad = Number(producto.cantidad) || 1;
+    const precio = Number(producto.precio) || 0;
+    return {
+      id: producto.id,
+      nombre: producto.nombre,
+      ...(producto.opcionSeleccionada ? { opcionSeleccionada: producto.opcionSeleccionada } : {}),
+      categoria: producto.categoria || '',
+      cantidad,
+      precio,
+      subtotal: cantidad * precio,
+    };
+  });
+  const total = Number(pedido.total) || subtotal + costoDelivery;
+  const registroPedido = {
+    id: codigoFinal,
+    codigoFinal,
+    estado: 'recibido',
+    clienteId: pedido.clienteId || null,
+    clienteCorreo: pedido.clienteCorreo || '',
+    cliente: {
+      id: pedido.clienteId || null,
+      nombre: datosEntrega.nombre || '',
+      apellido: datosEntrega.apellido || '',
+      correo: pedido.clienteCorreo || '',
+      telefono: datosEntrega.telefono || '',
+    },
+    entrega: {
+      tipo: tipoEntrega,
+      direccion: tipoEntrega === 'presencial' ? '2752' : datosEntrega.direccion || '',
+      referencia: tipoEntrega === 'presencial' ? 'Retiro presencial en el local' : datosEntrega.referencia || '',
+      costoDelivery,
+    },
+    pago: {
+      metodo: pedido.metodoPago || datosEntrega.metodoPago || '',
+      montoEfectivo: (pedido.metodoPago || datosEntrega.metodoPago) === 'efectivo'
+        ? Number(pedido.montoEfectivo) || 0
+        : null,
+    },
+    totales: { subtotal, descuento: 0, total },
+    productos,
+    // Mantener estos campos raíz para las reglas, consultas y pantallas actuales.
+    tipoEntrega,
+    subtotal,
+    delivery: costoDelivery,
+    total,
+    metodoPago: pedido.metodoPago || datosEntrega.metodoPago || '',
+    montoEfectivo: (pedido.metodoPago || datosEntrega.metodoPago) === 'efectivo'
+      ? Number(pedido.montoEfectivo) || 0
+      : null,
+  };
 
   if (firebaseConfigurado) {
     const referencia = await addDoc(collection(baseDatos, 'pedidos'), {
-      ...pedido,
-      codigoFinal,
+      ...registroPedido,
       creadoEn: serverTimestamp(),
-      estado: 'recibido'
     });
     localStorage.setItem(CLAVE_PEDIDO_ACTUAL, referencia.id);
     return referencia.id;
   }
 
   const pedidos = JSON.parse(localStorage.getItem('chicken_broaster_pedidos') || '[]');
-  const id = crypto.randomUUID();
+  const id = codigoFinal;
 
   localStorage.setItem(
     'chicken_broaster_pedidos',
     JSON.stringify([
       ...pedidos,
       {
-        ...pedido,
+        ...registroPedido,
         id,
-        codigoFinal,
         creadoEn: new Date().toISOString(),
-        estado: 'recibido',
       }
     ])
   );
@@ -186,7 +237,7 @@ export function escucharPedidoActual(clienteId, alCambiar, alError) {
   if (firebaseConfigurado && pedidoActualId) {
     return onSnapshot(
       doc(baseDatos, 'pedidos', pedidoActualId),
-      (resultado) => alCambiar(resultado.exists() ? { id: resultado.id, ...resultado.data() } : null),
+      (resultado) => alCambiar(resultado.exists() ? { ...resultado.data(), id: resultado.id } : null),
       alError,
     );
   }
@@ -196,8 +247,9 @@ export function escucharPedidoActual(clienteId, alCambiar, alError) {
     return onSnapshot(
       consulta,
       (resultado) => {
-        const pedido = resultado.docs.map((documento) => ({ id: documento.id, ...documento.data() }))[0];
-        if (pedido) localStorage.setItem(CLAVE_PEDIDO_ACTUAL, pedido.id);
+        const documento = resultado.docs[0];
+        const pedido = documento ? { ...documento.data(), id: documento.id } : null;
+        if (documento) localStorage.setItem(CLAVE_PEDIDO_ACTUAL, documento.id);
         alCambiar(pedido || null);
       },
       alError,
@@ -217,7 +269,7 @@ export function escucharHistorialPedidos(clienteId, alCambiar, alError) {
       consulta,
       (resultado) => {
         const pedidos = resultado.docs
-          .map((documento) => ({ id: documento.id, ...documento.data() }))
+          .map((documento) => ({ ...documento.data(), id: documento.id }))
           .sort((a, b) => {
             const fechaA = a.creadoEn?.toDate?.()?.getTime?.() || new Date(a.creadoEn || 0).getTime();
             const fechaB = b.creadoEn?.toDate?.()?.getTime?.() || new Date(b.creadoEn || 0).getTime();

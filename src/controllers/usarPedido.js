@@ -1,6 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { escucharHistorialPedidos, guardarPedido } from '../models/modeloCliente'
 
+const CLAVE_CARRITO_SESION = 'chicken_broaster_carrito_sesion'
+const CLAVE_ENTREGA_SESION = 'chicken_broaster_tipo_entrega_sesion'
+
+const leerCarritoGuardado = () => {
+  try {
+    const carritoGuardado = JSON.parse(sessionStorage.getItem(CLAVE_CARRITO_SESION) || '[]')
+    return Array.isArray(carritoGuardado) ? carritoGuardado : []
+  } catch {
+    return []
+  }
+}
+
+const leerEntregaGuardada = () => {
+  try {
+    return sessionStorage.getItem(CLAVE_ENTREGA_SESION) || 'delivery'
+  } catch {
+    return 'delivery'
+  }
+}
+
 export const productos = [
   { id: 1, nombre: '1/4 pollo broaster con arroz, papas y tallarines', descripcion: '2 presas: 1 truto corto y 1 truto largo. Incluye arroz, papas fritas y tallarines.', precio: 6500, imagen: '/menu/imagen-5.jpeg', icono: '🍗', categoria: 'Pollo broaster' },
   { id: 2, nombre: '1/4 pollo broaster con arroz chaufa y papas', descripcion: '2 presas: 1 truto corto y 1 truto largo. Acompañado de arroz chaufa y papas fritas.', precio: 7500, imagen: '/menu/imagen-9.jpeg', icono: '🍗', categoria: 'Pollo broaster' },
@@ -34,12 +54,21 @@ export const productos = [
 ]
 
 export function usePedido(usuario) {
-  const [carrito, setCarrito] = useState([]); 
+  const [carrito, setCarrito] = useState(leerCarritoGuardado); 
+  const [tipoEntrega, setTipoEntrega] = useState(leerEntregaGuardada);
   const [enviando, setEnviando] = useState(false); 
   const [confirmado, setConfirmado] = useState(false);
   const [historial, setHistorial] = useState([]);
   const [cargandoHistorial, setCargandoHistorial] = useState(false);
   const [datosEntregaSugeridos, setDatosEntregaSugeridos] = useState(null);
+
+  useEffect(() => {
+    sessionStorage.setItem(CLAVE_CARRITO_SESION, JSON.stringify(carrito));
+  }, [carrito]);
+
+  useEffect(() => {
+    sessionStorage.setItem(CLAVE_ENTREGA_SESION, tipoEntrega);
+  }, [tipoEntrega]);
 
   useEffect(() => {
     if (!usuario?.uid) {
@@ -75,10 +104,11 @@ export function usePedido(usuario) {
     const productosAnteriores = pedidoAnterior?.productos || [];
     setCarrito(productosAnteriores.map((producto) => ({ ...producto, cantidad: Math.max(1, Number(producto.cantidad) || 1) })));
     setDatosEntregaSugeridos(pedidoAnterior?.entrega || null);
+    setTipoEntrega(pedidoAnterior?.tipoEntrega || 'delivery');
   };
 
   const subtotal = useMemo(() => carrito.reduce((s, x) => s + x.precio * x.cantidad, 0), [carrito]); 
-  const delivery = 3000; 
+  const delivery = tipoEntrega === 'delivery' ? 3000 : 0;
   const total = subtotal + delivery;
 
   const finalizar = async (datos, usuario) => { 
@@ -91,12 +121,14 @@ export function usePedido(usuario) {
         subtotal, 
         delivery, 
         total, 
+        tipoEntrega,
         entrega: datos, 
         metodoPago: datos.metodoPago, 
         montoEfectivo: datos.metodoPago === 'efectivo' ? Number(datos.montoEfectivo) : null 
       }); 
       setConfirmado(true); 
       setCarrito([]); 
+      setTipoEntrega('delivery');
       return true;
     } finally { 
       setEnviando(false);
@@ -105,6 +137,8 @@ export function usePedido(usuario) {
 
   return { 
     carrito, 
+    tipoEntrega,
+    setTipoEntrega,
     agregar, 
     cambiarCantidad, 
     subtotal, 

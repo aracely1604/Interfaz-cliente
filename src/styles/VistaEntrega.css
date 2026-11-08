@@ -41,6 +41,25 @@
   margin-top: 4px;
 }
 
+.direccion-retiro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 14px 0 20px;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: 11px;
+  background: #fffaf4;
+  color: var(--suave);
+}
+
+.direccion-retiro strong {
+  color: var(--texto);
+  font-size: 20px;
+}
+
+
 .fijo {
   position: sticky;
   top: 20px;

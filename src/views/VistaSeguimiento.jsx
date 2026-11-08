@@ -120,7 +120,7 @@ export default function VistaSeguimiento({ ir, usuario }) {
               </div>
               <div>
                 <span>Total</span>
-                <b>{formatoPesos(pedido.total || 0)}</b>
+                <b>{formatoPesos(pedido.totales?.total ?? pedido.total ?? 0)}</b>
               </div>
               <div>
                 <span>Repartidor</span>

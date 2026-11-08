@@ -32,7 +32,7 @@ export default function VistaMenu({ pedido, ir, cerrarSesion, usuario }) {
     const opcion = opcionesElegidas[producto.id];
     if (producto.opciones && !opcion) return;
     pedido.agregar(producto.opciones
-      ? { ...producto, id: `${producto.id}-${opcion}`, nombre: `${producto.nombre} (${opcion})`, descripcion: `${producto.descripcion} Opción: ${opcion}.` }
+      ? { ...producto, id: `${producto.id}-${opcion}`, nombre: `${producto.nombre} (${opcion})`, opcionSeleccionada: opcion, descripcion: `${producto.descripcion} Opción: ${opcion}.` }
       : producto);
     setAvisoAgregado(`${producto.nombre} agregado al carrito`);
     setProductoSeleccionado(null);

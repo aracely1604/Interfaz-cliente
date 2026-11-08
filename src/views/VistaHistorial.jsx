@@ -56,7 +56,7 @@ export default function VistaHistorial({ pedido, ir, cerrarSesion }) {
                 <article className="pedido-anterior" key={orden.id}>
                   <div className="fecha-pedido"><span>{formatearFecha(orden.creadoEn)}</span><small>Pedido #{orden.id?.slice(0, 6).toUpperCase()}</small></div>
                   <div className="productos-anteriores"><div className="iconos-productos">{Array.isArray(orden.productos) && orden.productos.slice(0, 3).map((item) => <span key={item.id}>{item.icono}</span>)}</div><p>{Array.isArray(orden.productos) ? orden.productos.map((item) => `${item.cantidad}× ${item.nombre}`).join(' · ') : 'Productos no disponibles'}</p></div>
-                  <strong>{formatoPesos(orden.total || 0)}</strong>
+                  <strong>{formatoPesos(orden.totales?.total ?? orden.total ?? 0)}</strong>
                   <button className="boton-repetir" onClick={() => repetir(orden)}>↻ Repetir pedido</button>
                 </article>
               ))}

@@ -64,7 +64,7 @@ export default function VistaCarrito({ pedido, ir }) {
               <b>{formatoPesos(pedido.subtotal)}</b>
             </div>
             <div>
-              <span>Delivery</span>
+              <span>{pedido.tipoEntrega === 'presencial' ? 'Retiro presencial' : 'Delivery'}</span>
               <b>{formatoPesos(pedido.delivery)}</b>
             </div>
             <hr />
