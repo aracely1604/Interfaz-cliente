@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react'
 import { iniciarSesion, registrarCliente, enviarCorreoRecuperacion, escucharSesion, salir } from '../models/modeloCliente'
 
 export const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$/
-const mensaje = (error) => error?.message?.replace('Firebase: ', '') || 'Ocurrió un error. Intenta nuevamente.'
+const mensaje = (error) => {
+  const codigo = error?.code || ''
+  const mensajesAutenticacion = {
+    'auth/invalid-email': 'Correo incorrecto. Revisa el formato del correo.',
+    'auth/user-not-found': 'Correo incorrecto. No encontramos una cuenta con ese correo.',
+    'auth/wrong-password': 'Contraseña incorrecta. Inténtalo nuevamente.',
+    'auth/invalid-credential': 'Correo o contraseña incorrectos. Revisa tus datos e inténtalo nuevamente.',
+  }
+  return mensajesAutenticacion[codigo] || error?.message?.replace('Firebase: ', '') || 'Ocurrió un error. Intenta nuevamente.'
+}
 
 export function useAutenticacion(alIngresar) {
   const [usuario, setUsuario] = useState(null);

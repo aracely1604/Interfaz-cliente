@@ -158,6 +158,8 @@ export async function guardarPedido(pedido) {
     return {
       id: producto.id,
       nombre: producto.nombre,
+      ...(producto.imagen ? { imagen: producto.imagen } : {}),
+      ...(producto.icono ? { icono: producto.icono } : {}),
       ...(producto.opcionSeleccionada ? { opcionSeleccionada: producto.opcionSeleccionada } : {}),
       categoria: producto.categoria || '',
       cantidad,

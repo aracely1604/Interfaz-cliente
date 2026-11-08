@@ -155,7 +155,7 @@ export default function VistaSeguimiento({ ir, usuario }) {
                   <div className="panel-seguimiento">
                     <div className="codigo-final-card">
                       <span>Código de entrega</span>
-                      <strong>{estadoActual === 'entregado' ? 'Usado' : codigo}</strong>
+                      <strong>{estadoActual === 'entregado' ? 'Entregado' : codigo}</strong>
                       <p>Entrega este código al repartidor al recibir tu pedido.</p>
                     </div>
 
